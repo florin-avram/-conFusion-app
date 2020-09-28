@@ -9,9 +9,9 @@ function RenderDish(props) {
     
         if (dish != null) {
             return(
-                <Card
-                featuredTitle={dish.name}
-                image={require('./images/uthappizza.png')}>
+                <Card>
+                    <Card.Title> {dish.name} </Card.Title>
+                    <Card.Image source={require('./images/uthappizza.png')} />
                     <Text style={{margin: 10}}>
                         {dish.description}
                     </Text>
