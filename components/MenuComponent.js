@@ -41,7 +41,7 @@ class Menu extends Component {
             <FlatList 
                 data={this.state.dishes}
                 renderItem={renderMenuItem}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item.id.toString()}
             />
         ); 
     }
