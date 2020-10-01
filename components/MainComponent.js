@@ -10,6 +10,21 @@ import Home from './HomeComponent';
 import About from './AboutComponent';
 import Contact from './ContactComponent';
 import { SafeAreaView } from 'react-native';
+import { connect } from 'react-redux';
+import { fetchDishes, fetchComments, fetchPromotions, fetchLeaders } from '../redux/ActionCreators';
+
+const mapDispatchToProps = dispatch => ({
+    fetchDishes: () => dispatch(fetchDishes()),
+    fetchComments: () => dispatch(fetchComments()),
+    fetchPromotions: () => dispatch(fetchPromotions()),
+    fetchLeaders: () => dispatch(fetchLeaders()),
+});
+
+const mapStateToProps = state => {
+    return {
+
+    }
+}
 
 const MenuNavigator = createStackNavigator();
 
@@ -28,6 +43,7 @@ function MenuNavigatorScreen({ navigation }) {
                             <Icon name='menu'
                                   size={24}
                                   color='white'
+                                  iconStyle = {{marginLeft: 20}}
                                   onPress = {() => navigation.toggleDrawer() }
                             />
                         )
@@ -60,6 +76,7 @@ function HomeNavigatorScreen({ navigation }) {
                             <Icon name='menu'
                                   size={24}
                                   color='white'
+                                  iconStyle = {{marginLeft: 20}}
                                   onPress = {() => navigation.toggleDrawer() }
                             />
                         )
@@ -87,6 +104,7 @@ function AboutNavigatorScreen({navigation}) {
                             <Icon name='menu'
                                   size={24}
                                   color='white'
+                                  iconStyle = {{marginLeft: 20}}
                                   onPress = {() => navigation.toggleDrawer() }
                             />
                         )
@@ -114,6 +132,7 @@ function ContactNavigatorScreen({navigation}) {
                             <Icon name='menu'
                                   size={24}
                                   color='white'
+                                  iconStyle = {{marginLeft: 20}}
                                   onPress = {() => navigation.toggleDrawer() }
                             />
                         )
@@ -221,15 +240,21 @@ function MainNavigatorDrawer({ navigation }) {
 }
   
 class Main extends Component {
+    componentDidMount() {
+        this.props.fetchDishes();
+        this.props.fetchComments();
+        this.props.fetchPromotions();
+        this.props.fetchLeaders();
 
-  render() {
- 
-    return (
-      <NavigationContainer>   
-        <MainNavigatorDrawer />
-      </NavigationContainer>
-    );
-  }
+    }
+
+    render() {
+        return (
+          <NavigationContainer>   
+            <MainNavigatorDrawer />
+          </NavigationContainer>
+        );
+    }
 }
 
 const headerOptionsStyle = {
@@ -266,4 +291,4 @@ var styles = StyleSheet.create({
     },
 })
 
-export default Main;
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
