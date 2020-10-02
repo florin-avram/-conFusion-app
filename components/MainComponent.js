@@ -9,6 +9,7 @@ import DishDetail from './DishDetailComponent';
 import Home from './HomeComponent';
 import About from './AboutComponent';
 import Contact from './ContactComponent';
+import Reservation from './ReservationComponent';
 import { SafeAreaView } from 'react-native';
 import { connect } from 'react-redux';
 import { fetchDishes, fetchComments, fetchPromotions, fetchLeaders } from '../redux/ActionCreators';
@@ -143,6 +144,34 @@ function ContactNavigatorScreen({navigation}) {
     );
 }
 
+const ReservationNavigator = createStackNavigator();
+
+function ReservationNavigatorScreen({navigation}) {
+    return (
+        <ReservationNavigator.Navigator
+            initialRouteName='Reserve Table'
+            screenOptions = { headerOptionsStyle }
+        >
+            <ReservationNavigator.Screen 
+                name='Reserve Table'
+                component={Reservation}
+                options={
+                    ({navigation}) => ({
+                        headerLeft: () => (
+                            <Icon name='menu'
+                                  size={24}
+                                  color='white'
+                                  iconStyle = {{marginLeft: 20}}
+                                  onPress = {() => navigation.toggleDrawer() }
+                            />
+                        )
+                    })
+                }
+            />
+        </ReservationNavigator.Navigator>
+    );
+}
+
 function CustomDrawerContentComponent(props) {
     return (
         <ScrollView>
@@ -227,6 +256,19 @@ function MainNavigatorDrawer({ navigation }) {
                 options={{
                     drawerIcon: ({tintColor}) => (
                         <Icon name='address-card'
+                              type='font-awesome'
+                              size={22}
+                              color={tintColor}
+                        />
+                    )
+                }}
+            />
+            <MainNavigator.Screen 
+                name="Reserve Table"
+                component={ReservationNavigatorScreen}
+                options={{
+                    drawerIcon: ({tintColor}) => (
+                        <Icon name='cutlery'
                               type='font-awesome'
                               size={22}
                               color={tintColor}
