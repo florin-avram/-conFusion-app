@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { FlatList } from 'react-native';
-import { Avatar, Tile, ListItem} from 'react-native-elements';
+import { Avatar, ListItem} from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 import { Loading } from './LoadingComponent';
+import Swipeout from 'react-native-swipeout';
+import { deleteFavorite } from '../redux/ActionCreators'
 
 const mapStateToProps = state => {
     return {
@@ -12,28 +14,44 @@ const mapStateToProps = state => {
     }
 }
 
+const mapDispatchToProps = dispatch => ({
+    deleteFavorite: (dishId) => dispatch(deleteFavorite(dishId))
+})
+
 class Favorites extends Component {
     constructor(props) {
         super(props);
     }
 
+
     render() {
         const { navigate } = this.props.navigation;         
         const renderMenuItem = ({ item, index }) => {
+            const rightButton = [
+                {
+                    text: 'Delete',
+                    type: 'delete',
+                    onPress: () => {
+                        this.props.deleteFavorite(item.id)
+                    },
+                }
+            ];
             return (
-                <ListItem
-                    key = {index}
-                    onPress={() => navigate('DishDetail', { dishId: item.id })}
-                >
-                    <Avatar 
-                        rounded
-                        source={{uri: baseUrl + item.image}}
-                    />
-                    <ListItem.Content>
-                        <ListItem.Title> {item.name} </ListItem.Title>
-                        <ListItem.Subtitle> {item.description} </ListItem.Subtitle>
-                    </ListItem.Content>
-                </ListItem>
+                <Swipeout right={rightButton} autoClose={true}>
+                    <ListItem
+                        key = {index}
+                        onPress={() => navigate('DishDetail', { dishId: item.id })}
+                    >
+                        <Avatar 
+                            rounded
+                            source={{uri: baseUrl + item.image}}
+                        />
+                        <ListItem.Content>
+                            <ListItem.Title> {item.name} </ListItem.Title>
+                            <ListItem.Subtitle> {item.description} </ListItem.Subtitle>
+                        </ListItem.Content>
+                    </ListItem>
+                </Swipeout>
             );
         }
 
@@ -63,4 +81,4 @@ class Favorites extends Component {
     }
 }
 
-export default connect(mapStateToProps)(Favorites)
+export default connect(mapStateToProps, mapDispatchToProps)(Favorites)
