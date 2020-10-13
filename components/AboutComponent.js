@@ -4,6 +4,7 @@ import { Card, Avatar, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 import { Loading } from './LoadingComponent';
+import * as Animatable from 'react-native-animatable';
 
 const mapStateToProps = state => {
     return {
@@ -57,29 +58,41 @@ class About extends Component {
         } else if (this.props.leaders.errMess) {
             return (
                 <ScrollView>
-                    <History />
-                    <Card>
-                        <Card.Title>Corporate Leadership</Card.Title>
-                        <Card.Divider />
-                        <Text>{this.props.leaders.errMess}</Text>
-                    </Card>
+                    <Animatable.View
+                        animation="fadeInDown"
+                        duration={2000}
+                        delay={1000}
+                    >
+                        <History />
+                        <Card>
+                            <Card.Title>Corporate Leadership</Card.Title>
+                            <Card.Divider />
+                            <Text>{this.props.leaders.errMess}</Text>
+                        </Card>
+                    </Animatable.View>
                 </ScrollView>
 
             )
         } else  {
             return (
                 <ScrollView>
-                    <History />
-                    <Card>
-                        <Card.Title>Corporate Leadership</Card.Title>
-                        <Card.Divider />
-                        <FlatList 
-                            data={this.props.leaders.leaders}
-                            renderItem={renderLeader}
-                            keyExtractor={item => item.id.toString()}
-                        />
+                    <Animatable.View
+                        animation="fadeInDown"
+                        duration={2000}
+                        delay={1000}
+                    >
+                        <History />
+                        <Card>
+                            <Card.Title>Corporate Leadership</Card.Title>
+                            <Card.Divider />
+                            <FlatList 
+                                data={this.props.leaders.leaders}
+                                renderItem={renderLeader}
+                                keyExtractor={item => item.id.toString()}
+                            />
 
-                    </Card>
+                        </Card>
+                    </Animatable.View>
                 </ScrollView>
             );
         }
