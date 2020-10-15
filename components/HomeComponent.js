@@ -63,6 +63,7 @@ class Home extends Component {
             {
                 toValue: 8,
                 duration: 8000,
+                useNativeDriver: true,
                 easing: Easing.linear,
             }
         ).start(
