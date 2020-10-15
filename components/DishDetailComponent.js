@@ -24,26 +24,32 @@ const mapDispatchToProps = dispatch => ({
 
 function RenderDish(props) {
     const dish = props.dish;
-    handleViewRef = ref => this.view = ref;
 
-    const recognizeDrag = ({moveX, moveY, dx, dy}) => {
+    const recognizeRightToLeftDrag = ({moveX, moveY, dx, dy}) => {
         if (dx < -200)
             return true;
-        else
-            return false;
+        return false;
     }
+
+    const recognizeLeftToRightDrag = ({moveX, moveY, dx, dy}) => {
+        if (dx > 200)
+            return true;
+        return false;
+    }
+
+    let viewRef;
 
     const panResponder = PanResponder.create({
         onStartShouldSetPanResponder:
             (e, gestureState) => { return true; },
         onPanResponderGrant:
             () => {
-                this.view.rubberBand(1000)
+                viewRef.rubberBand(1000)
                     .then(endState => console.log(endState.finished ? ' finished' : 'cancelled'))
             },
         onPanResponderEnd:
             (e, gestureState) => {
-                if (recognizeDrag(gestureState))
+                if (recognizeRightToLeftDrag(gestureState))
                     Alert.alert(
                         'Add to Favorites',
                         'Are you sure you wish to add ' + dish.name + ' to your favorites?',
@@ -61,6 +67,9 @@ function RenderDish(props) {
                         ],
                         { cancelable: false}
                     )
+                if (recognizeLeftToRightDrag(gestureState)) {
+                    props.toggleModal();
+                }
                 return true;
             },
     })
@@ -71,8 +80,8 @@ function RenderDish(props) {
                 animation="fadeInDown"
                 duration={2000}
                 delay={1000}
-                ref={this.handleViewRef}
                 {...panResponder.panHandlers}
+                ref={(ref) => { viewRef = ref }}
             >
                 <Card>
                     <Card.Title> {dish.name} </Card.Title>
