@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, FlatList, Modal, Button} from 'react-native';
+import { Text, View, ScrollView, FlatList, Modal, Button, Alert, PanResponder} from 'react-native';
 import { Card, Icon, Input, Rating } from 'react-native-elements';
 
 import { connect } from 'react-redux';
@@ -23,54 +23,88 @@ const mapDispatchToProps = dispatch => ({
 
 
 function RenderDish(props) {
-
     const dish = props.dish;
+
+    const recognizeDrag = ({moveX, moveY, dx, dy}) => {
+        if (dx < -200)
+            return true;
+        else
+            return false;
+    }
+
+    const panResponder = PanResponder.create({
+        onStartShouldSetPanResponder:
+            (e, gestureState) => { return true; },
+        onPanResponderEnd:
+            (e, gestureState) => {
+                if (recognizeDrag(gestureState))
+                    Alert.alert(
+                        'Add to Favorites',
+                        'Are you sure you wish to add ' + dish.name + ' to your favorites?',
+                        [
+                            {
+                                text: 'Cancel',
+                                onPress: () => console.log('Cancel pressed'),
+                                style: 'cancel'
+                            },
+                            {
+                                text: 'Ok',
+                                onPress: () =>
+                                    props.favorite ? console.log('Already favorite') : props.onPress() 
+                            }
+                        ],
+                        { cancelable: false}
+                    )
+                return true;
+            }
+    })
     
-        if (dish != null) {
-            return(
-                <Animatable.View
-                    animation="fadeInDown"
-                    duration={2000}
-                    delay={1000}
-                >
-                    <Card>
-                        <Card.Title> {dish.name} </Card.Title>
-                        <Card.Image source={{uri: baseUrl + dish.image}}/>
-                        <Text style={{margin: 10}}>
-                            {dish.description}
-                        </Text>
-                        <View style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}>
-                            <Icon 
-                                raised
-                                reverse
-                                name={props.favorite ? 'heart' : 'heart-o'}
-                                type='font-awesome'
-                                color='#f50'
-                                onPress={() => props.favorite ? 
-                                    console.log('Already favorite') :
-                                    props.onPress()
-                                }
-                            />
-                            <Icon 
-                                raised
-                                reverse
-                                name={'pencil'}
-                                type='font-awesome'
-                                color='#512DA8'
-                                onPress={() => props.toggleModal() }
-                            />
-                        </View>
-                    </Card>
-                </Animatable.View>
-            );
-        }
-        else {
-            return(<View></View>);
-        }
+    if (dish != null) {
+        return(
+            <Animatable.View
+                animation="fadeInDown"
+                duration={2000}
+                delay={1000}
+                {...panResponder.panHandlers}
+            >
+                <Card>
+                    <Card.Title> {dish.name} </Card.Title>
+                    <Card.Image source={{uri: baseUrl + dish.image}}/>
+                    <Text style={{margin: 10}}>
+                        {dish.description}
+                    </Text>
+                    <View style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}>
+                        <Icon 
+                            raised
+                            reverse
+                            name={props.favorite ? 'heart' : 'heart-o'}
+                            type='font-awesome'
+                            color='#f50'
+                            onPress={() => props.favorite ? 
+                                console.log('Already favorite') :
+                                props.onPress()
+                            }
+                        />
+                        <Icon 
+                            raised
+                            reverse
+                            name={'pencil'}
+                            type='font-awesome'
+                            color='#512DA8'
+                            onPress={() => props.toggleModal() }
+                        />
+                    </View>
+                </Card>
+            </Animatable.View>
+        );
+    }
+    else {
+        return(<View></View>);
+    }
 }
 
 function RenderComments(props) {
