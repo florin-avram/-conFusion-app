@@ -6,6 +6,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Moment from 'moment';
 import { } from 'react-native-gesture-handler'; 
 import * as Animatable from 'react-native-animatable';
+import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-permissions';
 
 class Reservation extends Component {
     constructor(props) {
@@ -39,6 +41,8 @@ class Reservation extends Component {
                     text: 'Ok',
                     onPress: () => {
                         console.log('Ok pressed');
+                        this.presentLocalNotification(
+                            this.state.date.toLocaleDateString());
                         this.resetForm();
                     },
                 }
@@ -54,6 +58,38 @@ class Reservation extends Component {
             date: new Date(),
             showDateTimeModal: false,
             mode: 'date',
+        });
+    }
+
+    async obtainNotificationPermission() {
+        let permission = await Permissions.getAsync(
+            Permissions.USER_FACING_NOTIFICATIONS);
+        if (permission.status !== 'granted') {
+            permission = await Permissions.askAsync(
+                Permissions.USER_FACING_NOTIFICATIONS);
+            if (permission.status !== 'granted') {
+                Alert.alert('Permision not granted to show notifications');
+            }
+        }
+        return permission;
+    }
+
+    async presentLocalNotification(date) {
+        await this.obtainNotificationPermission();
+        Notifications.setNotificationHandler({
+            handleNotification: async () => ({
+                shouldShowAlert: true,
+                shouldPlaySound: true,
+                shouldSetBadge: false,
+            }),
+        });
+
+        Notifications.scheduleNotificationAsync({
+            content: {
+                title: 'Your Reservation',
+                body: "Reservation for " + date + " requested",
+            },
+            trigger: null,
         });
     }
 
