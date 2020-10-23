@@ -11,6 +11,7 @@ import About from './AboutComponent';
 import Contact from './ContactComponent';
 import Reservation from './ReservationComponent';
 import Favorites from './FavoritesComponent';
+import Login from './LoginComponent';
 import { SafeAreaView } from 'react-native';
 import { connect } from 'react-redux';
 import { fetchDishes, fetchComments, fetchPromotions, fetchLeaders } from '../redux/ActionCreators';
@@ -206,6 +207,34 @@ function FavoritesNavigatorScreen({ navigation }) {
     );
 }
 
+const LoginNavigator = createStackNavigator();
+
+function LoginNavigatorScreen({ navigation }) {
+    return(
+        <LoginNavigator.Navigator
+            initialRouteName='Login'
+            screenOptions={ headerOptionsStyle }
+        >
+            <LoginNavigator.Screen
+                name="Login"
+                component={Login}
+                options={
+                    ({navigation}) => ({
+                        headerLeft: () => (
+                            <Icon name='menu'
+                                  size={24}
+                                  color='white'
+                                  iconStyle = {{marginLeft: 20}}
+                                  onPress = {() => navigation.toggleDrawer() }
+                            />
+                        )
+                    })
+                }
+            />
+        </LoginNavigator.Navigator>
+    );
+}
+
 
 function CustomDrawerContentComponent(props) {
     return (
@@ -246,6 +275,19 @@ function MainNavigatorDrawer({ navigation }) {
                     <CustomDrawerContentComponent {...props} />
             }
         >
+            <MainNavigator.Screen
+                name="Login"
+                component={LoginNavigatorScreen}
+                options={{
+                    drawerIcon: ({tintColor}) => (
+                        <Icon name='sign-in'
+                              type='font-awesome'
+                              size={24}
+                              color={tintColor}
+                        />
+                    )
+                }}
+            />
             <MainNavigator.Screen
                 name="Home"
                 component={HomeNavigatorScreen}
